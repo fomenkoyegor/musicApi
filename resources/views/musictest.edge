@@ -1,0 +1,20 @@
+<form action="{{route('img')}}" method="post" enctype="multipart/form-data">
+    <input type="text" name="name" required>
+    <input type="file" name="file" />
+    <input type="submit">
+  </form>  
+  <hr>
+   <ul class='list-group postsList'>
+
+        @each(music in musics)
+        <li class='list-group-item'>
+            <h4>{{music.name}}</h4>
+            <audio controls>
+              <source src="{{music.path}}" type="audio/ogg; codecs=vorbis">
+              {{--  <source src="{{assetsUrl('music/'+music.name)}}" type="audio/ogg; codecs=vorbis">  --}}
+              
+            </audio>
+        </li>
+        @endeach
+        
+    </ul>
