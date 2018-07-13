@@ -13,11 +13,13 @@ class UserController {
     }
     async login({ request, response, auth }) {
         const { email, password } = request.all();
-        const {token} = await auth.attempt(email, password)
-        response.status(201).json({ 
-            msg:'sucsess user is auth',
-            token
-         })
+        const { token } = await auth.attempt(email, password);
+        const user = await User.findBy('email', email);
+        response.status(201).json({
+            msg: 'sucsess user is auth',
+            token: token,
+            user: user
+        })
     }
 }
 

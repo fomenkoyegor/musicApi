@@ -15,16 +15,16 @@
 
 const Route = use('Route')
 
-Route.get('/','MainController.index')
-Route.post('/img','MainController.img').as('img')
+Route.get('/', 'MainController.index')
+Route.post('/img', 'MainController.img').as('img')
 
-Route.post('/apiImg','MainController.apiImg')
-Route.get('/getMusic','MainController.getMusic')
+Route.post('/apiImg', 'MainController.apiImg').middleware(['auth'])
+Route.get('/getMusic', 'MainController.getMusic')
+Route.get('/getUserMusic', 'MainController.getUserMusic').middleware(['auth'])
 
 
-
-Route.group(()=>{
-    Route.post('auth/register','UserController.register')
-    Route.post('auth/login','UserController.login')
+Route.group(() => {
+    Route.post('auth/register', 'UserController.register')
+    Route.post('auth/login', 'UserController.login')
 }).prefix("api/")
 

@@ -1,58 +1,71 @@
 'use strict'
 const Helpers = use('Helpers');
-const Music= use('App/Models/Music');
+const Music = use('App/Models/Music');
+const data = new Date();
+function getRandom(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
 class MainController {
-    async index({ request, response, params, view }) {
-        const musics = await Music.all();
-        return view.render('welcome',{
-            musics:musics.toJSON()
-        })
-    }
-    async img({request, response, params,}){
-        const {name} = request.all();
-        const file = request.file('file');
-        const musicPath = `music`;
-        const path = Helpers.publicPath(musicPath);
-        const type = file.subtype;
-
-        await file.move(path, {
-            name:`${name}.${type}`
-          })
-
-        const music = new Music();
-        music.name = `${name}.${type}`;
-        music.path = `music\\${name}.${type}`;
-        await music.save();
-        return response.redirect('/')
-
-        
+    async index({request, response, params, view}) {
+        return view.render('welcome')
     }
 
-    async apiImg({request, response, params,}){
-        const {name} = request.all();
-        const file = request.file('file');
-        const musicPath = `music`;
-        const path = Helpers.publicPath(musicPath);
-        const type = file.subtype;
 
-        await file.move(path, {
-            name:`${name}.${type}`
-          })
+    async apiImg({request, response, params, auth}) {
+        const user = await auth.getUser();
+        const { title,singer,year,genre } = request.all();
+
+
+        const name = `${getRandom(data.getMilliseconds(),9999999)}`;
+        const file = request.file('file');
+        const type = file.subtype;
+        const cover = request.file('cover');
+        const coverType = cover.subtype;
+
+        const musicPath = `music\\${user.username}\\${name}`;
+        const path = Helpers.publicPath(musicPath);
+
+
 
         const music = new Music();
-        music.name = `${name}.${type}`;
-        music.path = `music\\${name}.${type}`;
-        await music.save();
+        music.name = `${name}`;
+        music.username = `${user.username}`;
+        music.path = `music\/${user.username}\/${name}\/${name}.${type}`;
+        music.icon = `music\/icons\/icon1.jpg`;
+        music.title = title;
+        music.singer = singer;
+        music.year = year;
+        music.genre = genre;
+        music.cover = `music\/${user.username}\/${name}\/${name}.${coverType}`;
+
+        await user.musics().save(music);
+
+        await file.move(path, {
+            name: `${name}.${type}`
+        });
+        await cover.move(path, {
+            name: `${name}.${coverType}`
+        });
+
         response.json({
             music
         })
 
-        
+
     }
 
-    async getMusic({response}){
+    async getMusic({response}) {
         const music = await Music.all();
-        response.json({music})
+        response.json({
+            music
+        })
+    }
+    async getUserMusic({response, auth}) {
+        const user = await auth.getUser();
+        const music = await user.musics().fetch();
+        response.json({
+            music
+        })
     }
 }
 

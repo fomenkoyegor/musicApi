@@ -1,65 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Hello Adonis</title>
+  <meta charset="utf-8">
+  <title>Ngadonis</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="ngadonis/favicon.ico">
   
 </head>
 <body>
-  
-  
-    <hr>
-         
-            <form action="/apiImg" name="form" enctype="multipart/form-data">
-              <input type="text" name="name" required/>
-              <input type="file" name="file" required/>
-              <input type="submit">
-            </form>
-      
-    <hr>
-    <ul id="ul"></ul>
-         
-    <script>
-        
-        let form = document.forms.form;
-        let ul = document.getElementById('ul');
-        
-        form.addEventListener("submit",(e)=>{
-          e.preventDefault();
-          const formData = new FormData(form);
-          fetch("/apiImg",{
-            method: 'post',
-            body:formData
-          }).then(res=>{
-            console.log(res);
-            GetMusic()
-            })
-        })
+  <app-root></app-root>
+{{script('ngadonis/runtime.js')}}
+{{script('ngadonis/polyfills.js')}}
+{{script('ngadonis/styles.js')}}
+{{script('ngadonis/vendor.js')}}
+{{script('ngadonis/main.js')}}
 
-        function GetMusic(){
-          ul.innerHTML = '';
-          fetch('/getMusic')
-            .then(res=>res=res.json())
-            .then(res=>{
-              
-              let musics = res['music'];
-              console.log(musics);
-              musics.forEach((m)=>{
-                console.log(m);
-                 ul.innerHTML += 
-                  '<li>'+
-                    '<h5>'+m.name+'</h5>'+
-                    '<audio controls>'+
-                      '<source src=" '+ m.path +' " type="audio/ogg; codecs=vorbis">'
-                    +'</audio>'
-                  +'</li>';
-              })
-            })
-        }
-        GetMusic()
-        
 
-    </script>
+
+
+
 </body>
 </html>
-
